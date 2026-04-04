@@ -38,7 +38,7 @@ controlSignals= {'ResultSRC': 'ALU', 'MemWrite': 0, 'ALUSrc': 'Register', 'RegWr
 # ResultSrc can be ALUResult, Memory(lw) or PCplus4(jal instruction)
 # ALUSrc can be Register or Immediate
 # ImmSrc can be B U I J S
-# PCSrc can be next instruction(+4 bytes), pc+target, aluResult
+# PCSrc can be next: instruction(+4 bytes), pc+target, aluResult
 
 # you will have to handle overflow aluexecute
 # never write to x0
@@ -47,7 +47,7 @@ controlSignals= {'ResultSRC': 'ALU', 'MemWrite': 0, 'ALUSrc': 'Register', 'RegWr
 registerFile= dict.fromkeys([decimal_to_binary(x, 5) for x in range(32)], '0'*32)
 registerFile['00010']= '00000000000000000000000101111100' #set sp to 380
 
-dataMemory= dict.fromkeys([unsigned_decimal_to_hex(x) for x in range(0x00010000, 0x00010080, 4)], '0'*32)
+dataMemory= dict.fromkeys([unsigned_decimal_to_hex(x) for x in range(0x00010000, 0x000000FF, 4)], '0'*32)
 
 print(dataMemory)
 
