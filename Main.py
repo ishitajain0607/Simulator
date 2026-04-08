@@ -272,19 +272,19 @@ def aluExecute(pc_str, rs1, rs2, imm):
         val_srcA= binary_to_signed_decimal(srcA)
         val_srcB= binary_to_signed_decimal(srcB)
         final_val= (val_srcA+val_srcB) & (0xFFFFFFFF)
-        output= decimal_to_binary(final_val)
+        output= decimal_to_binary(int(final_val))
 
     elif (control=='sub'):
         val_srcA= binary_to_signed_decimal(srcA)
         val_srcB= binary_to_signed_decimal(srcB)
         final_val= (val_srcA-val_srcB) & (0xFFFFFFFF)
-        output= decimal_to_binary(final_val)
+        output= decimal_to_binary(int(final_val))
 
     elif (control=='sll'):
         val_srcA= binary_to_signed_decimal(srcA)
         val_srcB= binary_to_unsigned_decimal(srcB[-5:])
         final_val= (val_srcA<<val_srcB) & (0xFFFFFFFF)
-        output= decimal_to_binary(final_val)
+        output= decimal_to_binary(int(final_val))
 
     elif (control=='slt'):
         val_srcA= binary_to_signed_decimal(srcA)
@@ -317,7 +317,7 @@ def aluExecute(pc_str, rs1, rs2, imm):
         final_val= (val_srcA&val_srcB) & (0xFFFFFFFF)
         output= decimal_to_binary(int(final_val))
     elif (control=='lui'):
-        output= val_srcB
+        output= decimal_to_binary(int(val_srcB))
 
     #branch instructions
     elif (control=='beq'):
@@ -349,7 +349,6 @@ def aluExecute(pc_str, rs1, rs2, imm):
     if ((controlSignals['zero'] and branch) or jump):
         controlSignals['PCSrc']='pc+target'
 
-aluExecute('0000000')
 
 def run(input_file):
     f= open(input_file)
