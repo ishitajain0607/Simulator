@@ -47,7 +47,7 @@ controlSignals= {'ResultSRC': 'ALU', 'MemWrite': 0, 'ALUSrc': 'Register', 'RegWr
 registerFile= dict.fromkeys([decimal_to_binary(x, 5) for x in range(32)], '0'*32)
 registerFile['00010']= '00000000000000000000000101111100' #set sp to 380
 
-dataMemory= dict.fromkeys([unsigned_decimal_to_hex(x) for x in range(0x00010000, 0x000000FF, 4)], '0'*32)
+dataMemory= dict.fromkeys([unsigned_decimal_to_hex(x) for x in range(0x00000000, 0x000000FF, 4)], '0'*32)
 
 print(dataMemory)
 
