@@ -323,27 +323,27 @@ def aluExecute(pc_str, rs1, rs2, imm):
     elif (control=='beq'):
         val_srcA= binary_to_signed_decimal(srcA)
         val_srcB= binary_to_signed_decimal(srcB)
-        controlSignals['zero']= (val_srcA==val_srcA)
+        controlSignals['zero']= (val_srcA==val_srcB)
     elif (control=='bne'):
         val_srcA= binary_to_signed_decimal(srcA)
         val_srcB= binary_to_signed_decimal(srcB)
-        controlSignals['zero']= (val_srcA!=val_srcA)
+        controlSignals['zero']= (val_srcA!=val_srcB)
     elif (control=='blt'):
         val_srcA= binary_to_signed_decimal(srcA)
         val_srcB= binary_to_signed_decimal(srcB)
-        controlSignals['zero']= (val_srcA<val_srcA)
+        controlSignals['zero']= (val_srcA<val_srcB)
     elif (control=='bge'):
         val_srcA= binary_to_signed_decimal(srcA)
         val_srcB= binary_to_signed_decimal(srcB)
-        controlSignals['zero']= (val_srcA>=val_srcA)
+        controlSignals['zero']= (val_srcA>=val_srcB)
     elif (control=='bltu'):
         val_srcA= binary_to_unsigned_decimal(srcA)
         val_srcB= binary_to_unsigned_decimal(srcB)
-        controlSignals['zero']= (val_srcA<val_srcA)
+        controlSignals['zero']= (val_srcA<val_srcB)
     elif (control=='bgeu'):
         val_srcA= binary_to_unsigned_decimal(srcA)
         val_srcB= binary_to_unsigned_decimal(srcB)
-        controlSignals['zero']= (val_srcA>=val_srcA)
+        controlSignals['zero']= (val_srcA>=val_srcB)
     branch= controlSignals['Branch']
     jump= controlSignals['Jump']
     if ((controlSignals['zero'] and branch) or jump):
