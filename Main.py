@@ -18,7 +18,7 @@ def binary_to_unsigned_decimal(binary_string):
         num= (num<<1)+int(bit)
     return num
 
-def decimal_to_binary(num, size):
+def decimal_to_binary(num, size=32):
     #must handle both signed and unsigned representation
     #unsignedrange-> 0 to 2^32-1
     #signedrange-> -2^31 to 2^31-1
@@ -245,34 +245,118 @@ def extend(instruction):
 
 
 #Execute phase
-def aluExecute(pc, rs1, rs2, imm):
-    control= controlSignals['opcode']
+def aluExecute(pc_str, rs1, rs2, imm):
+    control= controlSignals['ALUControl']
     #add/sub/sll/slt/sltu/xor/srl/or/and
     #beq/bne/blt/bge/bltu/bgeu
+    #lui
+    #ALUSrcA- Reg, Imm, PC
+    #ALUSrcB- Reg, Imm, PC
+    srcA= ''
+    srcB= ''
+    controlA= controlSignals['ALUSrcA']
+    controlB= controlSignals['ALUSrcB']
+
+    if(controlA=='Reg'):
+        srcA=rs1
+    elif(controlA=='PC'):
+        srcA=pc_str
+
+    if (controlB=='Imm'):
+        srcB=imm
+    elif (controlB=='Reg'):
+        srcB=rs2
+
+
     if (control=='add'):
-        pass
+        val_srcA= binary_to_signed_decimal(srcA)
+        val_srcB= binary_to_signed_decimal(srcB)
+        final_val= (val_srcA+val_srcB) & (0xFFFFFFFF)
+        output= decimal_to_binary(final_val)
+
     elif (control=='sub'):
-        pass
+        val_srcA= binary_to_signed_decimal(srcA)
+        val_srcB= binary_to_signed_decimal(srcB)
+        final_val= (val_srcA-val_srcB) & (0xFFFFFFFF)
+        output= decimal_to_binary(final_val)
+
     elif (control=='sll'):
-        pass
+        val_srcA= binary_to_signed_decimal(srcA)
+        val_srcB= binary_to_unsigned_decimal(srcB[-5:])
+        final_val= (val_srcA<<val_srcB) & (0xFFFFFFFF)
+        output= decimal_to_binary(final_val)
+
     elif (control=='slt'):
-        pass
+        val_srcA= binary_to_signed_decimal(srcA)
+        val_srcB= binary_to_signed_decimal(srcB)
+        final_val= (val_srcA<val_srcB)
+        output= decimal_to_binary(int(final_val))
+    
     elif (control=='sltu'):
-        pass
+        val_srcA= binary_to_unsigned_decimal(srcA)
+        val_srcB= binary_to_unsigned_decimal(srcB)
+        final_val= (val_srcA<val_srcB)
+        output= decimal_to_binary(int(final_val))
+    
     elif (control=='xor'):
-        pass
+        val_srcA= binary_to_signed_decimal(srcA)
+        val_srcB= binary_to_signed_decimal(srcB)
+        final_val= (val_srcA^val_srcB) & (0xFFFFFFFF)
+        output= decimal_to_binary(int(final_val))
+    
     elif (control=='srl'):
-        pass
+        val_srcA= binary_to_signed_decimal(srcA)
+        val_srcB= binary_to_signed_decimal(srcB)
+        final_val= (val_srcA>>val_srcB) & (0xFFFFFFFF)
+        output= decimal_to_binary(int(final_val))
+
+
     elif (control=='and'):
-        pass
+        val_srcA= binary_to_signed_decimal(srcA)
+        val_srcB= binary_to_signed_decimal(srcB)
+        final_val= (val_srcA&val_srcB) & (0xFFFFFFFF)
+        output= decimal_to_binary(int(final_val))
+    elif (control=='lui'):
+        output= val_srcB
 
+    #branch instructions
+    elif (control=='beq'):
+        val_srcA= binary_to_signed_decimal(srcA)
+        val_srcB= binary_to_signed_decimal(srcB)
+        controlSignals['zero']= (val_srcA==val_srcA)
+    elif (control=='bne'):
+        val_srcA= binary_to_signed_decimal(srcA)
+        val_srcB= binary_to_signed_decimal(srcB)
+        controlSignals['zero']= (val_srcA!=val_srcA)
+    elif (control=='blt'):
+        val_srcA= binary_to_signed_decimal(srcA)
+        val_srcB= binary_to_signed_decimal(srcB)
+        controlSignals['zero']= (val_srcA<val_srcA)
+    elif (control=='bge'):
+        val_srcA= binary_to_signed_decimal(srcA)
+        val_srcB= binary_to_signed_decimal(srcB)
+        controlSignals['zero']= (val_srcA>=val_srcA)
+    elif (control=='bltu'):
+        val_srcA= binary_to_unsigned_decimal(srcA)
+        val_srcB= binary_to_unsigned_decimal(srcB)
+        controlSignals['zero']= (val_srcA<val_srcA)
+    elif (control=='bgeu'):
+        val_srcA= binary_to_unsigned_decimal(srcA)
+        val_srcB= binary_to_unsigned_decimal(srcB)
+        controlSignals['zero']= (val_srcA>=val_srcA)
+    branch= controlSignals['Branch']
+    jump= controlSignals['Jump']
+    if ((controlSignals['zero'] and branch) or jump):
+        controlSignals['PCSrc']='pc+target'
 
+aluExecute('0000000')
 
 def run(input_file):
     f= open(input_file)
     l= f.readlines()
     f.close()
-    
+    #red contrl signals well
+    #halt_instr = '00000000000000000000000000101000'
     PC=0
     halt= False
     while (halt!=True):
